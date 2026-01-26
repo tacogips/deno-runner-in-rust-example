@@ -1,0 +1,37 @@
+[package]
+name        = "deno_sample"
+version     = "0.1.0"
+edition     = "2024"
+description = "A sample crate demonstrating how to run Deno (JavaScript) within a Rust process"
+publish     = false
+
+# This crate serves as a code sample for embedding Deno in Rust applications.
+# It demonstrates:
+# - Creating a JsRuntime with custom extensions
+# - Loading and executing JavaScript modules
+# - Passing values between Rust and JavaScript
+# - Running Deno in a separate OS thread (required because JsRuntime is !Send)
+# - Channel-based communication between async Rust tasks and the Deno thread
+
+[[bin]]
+name = "deno_sample"
+path = "src/main.rs"
+
+[dependencies]
+# Deno core runtime - provides V8 JavaScript engine integration
+# NOTE: Version 0.327.0 is pinned because 0.328.0+ requires syntax changes
+# See: https://docs.rs/crate/deno_core/0.328.0/source/error.rs#1223-1224
+deno_core = "=0.327.0"
+
+# Random number generation for crypto.getRandomValues() implementation
+rand = "0.9.1"
+
+# Error handling with derive macro
+thiserror = "2.0.12"
+
+# Async runtime for the main application
+tokio = { version = "1.45.0", features = ["rt-multi-thread", "macros", "sync"] }
+
+# Structured logging/tracing
+tracing            = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
